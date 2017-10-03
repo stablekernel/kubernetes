@@ -1,2 +1,12 @@
-# kubernetes
-k8s bootstrapping
+# k8s bootstrapping
+
+## nginx-ingress-controller
+
+Add to cluster to use `nginx` as a load balancer.
+
+- Useful for environments where cost of a cloud provided load balancer is untenable.
+- Deploy once per cluster, use one or more Ingress resources for routing.
+- Requires allocating static IP address from cloud provider and entering in `nginx-ingress-controller/ingress-controller-lb.yaml`.
+
+
+
