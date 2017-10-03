@@ -1,0 +1,24 @@
+# Assigns HTTP requests made to a static IP address to a nginx ingress controller
+# Note: A static IP address must be allocated and entered in spec.loadBalancerIP.
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress-lb
+  namespace: cluster
+  annotations:
+    service.beta.kubernetes.io/external-traffic: OnlyLocal
+  labels:
+    app: nginx-ingress-lb
+spec:
+  type: LoadBalancer
+  # Configure a static IP address through your cloud provider and assign it here.
+  loadBalancerIP: x.x.x.x
+  ports:
+  - port: 80
+    name: http
+    targetPort: 80
+  - port: 443
+    name: https
+    targetPort: 443
+  selector:
+    k8s-app: nginx-ingress-controller
