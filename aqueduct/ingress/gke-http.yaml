@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: <APP_NAME>
+  annotations:
+    # Run `gcloud compute addresses create static-ip-name --global` to allocate a static ip.
+    # `static-ip-name` is a name and can be changed, as long as is changed in both the above command and below key-value pair.
+    kubernetes.io/ingress.global-static-ip-name: "static-ip-name"
+spec:
+  rules:
+  - host: <APP_HOSTNAME>
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: api-service
+          servicePort: 80

@@ -12,11 +12,6 @@ spec:
       labels:
         k8s-app: nginx-ingress-controller
     spec:
-      # hostNetwork makes it possible to use ipv6 and to preserve the source IP correctly regardless of docker configuration
-      # however, it is not a hard dependency of the nginx-ingress-controller itself and it may cause issues if port 10254 already is taken on the host
-      # that said, since hostPort is broken on CNI (https://github.com/kubernetes/kubernetes/issues/31307) we have to use hostNetwork where CNI is used
-      # like with kubeadm
-      # hostNetwork: true
       terminationGracePeriodSeconds: 60
       containers:
       - image: gcr.io/google_containers/nginx-ingress-controller:0.9.0-beta.14
