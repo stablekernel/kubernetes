@@ -4,6 +4,6 @@ metadata:
   namespace: kube-system
 data:
   # Set this to a valid e-mail
-  lego.email: "admin@company.com"
+  lego.email: <ADMIN_EMAIL>
   lego.url: "https://acme-v01.api.letsencrypt.org/directory"
 kind: ConfigMap

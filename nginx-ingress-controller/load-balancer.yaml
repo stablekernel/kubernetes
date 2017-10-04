@@ -11,8 +11,8 @@ metadata:
     app: nginx-ingress-lb
 spec:
   type: LoadBalancer
-  # Configure a static IP address through your cloud provider and assign it here.
-  loadBalancerIP: <StaticIPAddress>
+  # Once this service has been deployed, reserve the IP address assigned to this service.
+  # loadBalancerIP: <StaticIPAddress>
   ports:
   - port: 80
     name: http
