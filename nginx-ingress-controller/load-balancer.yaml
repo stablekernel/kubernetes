@@ -4,7 +4,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nginx-ingress-lb
-  namespace: cluster
+  namespace: kube-system
   annotations:
     service.beta.kubernetes.io/external-traffic: OnlyLocal
   labels:
@@ -12,7 +12,7 @@ metadata:
 spec:
   type: LoadBalancer
   # Configure a static IP address through your cloud provider and assign it here.
-  loadBalancerIP: x.x.x.x
+  loadBalancerIP: <StaticIPAddress>
   ports:
   - port: 80
     name: http

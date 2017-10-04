@@ -1,5 +1,11 @@
 # k8s bootstrapping
 
+## Usage
+
+The following assumes that tools such as `docker`, `gcloud` and `kubectl` have been installed and configured.
+
+
+
 ## nginx-ingress-controller
 
 Add to cluster to use `nginx` as a load balancer.
@@ -10,4 +16,4 @@ Add to cluster to use `nginx` as a load balancer.
 - Assumes there already exists a default-http-backend service in kube-system. This is true of GKE.
 
 
-## https://github.com/jetstack/kube-lego/tree/master/examples/nginx
+##

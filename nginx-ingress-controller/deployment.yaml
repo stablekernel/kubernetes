@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: nginx-ingress-controller
-  namespace: cluster
+  namespace: kube-system
   labels:
     k8s-app: nginx-ingress-controller
 spec:
