@@ -12,7 +12,9 @@ The following assumes that you have a Google Cloud account with billing enabled 
 
 ## Cluster Provisioning
 
-The objects in `kube-lego` and `nginx-ingress-controller` provide a cluster with low cost alternatives to load-balancing with SSL termination. These objects need only be applied when a cluster is first created and live in the `kube-system` namespace.
+*Tasks in this section need only be applied when a cluster is first created, not for each application deployed.*
+
+The objects in `kube-lego` and `nginx-ingress-controller` provide a cluster with low cost alternatives to load-balancing with SSL termination. They live in the `kube-system` namespace.
 
 ### SSL Certificates via Let's Encrypt
 
@@ -47,4 +49,26 @@ nginx-ingress-lb       10.55.249.185   <pending>     80:32005/TCP,443:31623/TCP 
 
 Where `nginx-ingress-lb`'s `EXTERNAL-IP` is `<pending>`. Once that `<pending>` flips to an IP address, note the IP address and navigate to `VPC Network->External IP adresses` in the Google Cloud console. Locate the IP address in that list and change it's type from `Ephemeral` to `Static`. (You'll be prompted for a name which can be whatever you like.)
 
-*Important:* if you delete the `nginx-ingress-lb` service after reserving a static IP for it, simply re-creating the service won't work. You'll need to release the reserved address before the service will start again and reserve the IP address again.
+*Important: if you delete the `nginx-ingress-lb` service after reserving a static IP for it, simply re-creating the service won't work. You'll need to release the reserved address before the service will start again and then reserve the IP address again.*
+
+## Application Deployment
+
+The `aqueduct` directory contains templates for Kubernetes objects that deploy an Aqueduct application and its PostgreSQL database. For each Aqueduct application deployed into the cluster, follow the following steps.
+
+*Note: Kubernetes object names may not contain underscores. If your application name contains underscores, substitute a dash (`-`) when replacing the `<APP_NAME>` template variable. For example, if your application name is `my_app`, use `my-app`.*
+
+1. Create a new namespace with the name of your application.
+
+```
+kubectl create namespace my-app
+```
+
+2. Modify `config/configmap.yaml` and `config/secrets.yaml` by replacing all occurrences of `<APP_NAME>` with the name of your application (remembering to use dashes and not underscores), and replacing `<PASSWORD>` with a database password. Apply these files:
+
+```
+kubectl apply -f config/
+```
+
+
+
+### Files to check in to version control
