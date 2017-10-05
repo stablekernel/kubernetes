@@ -28,7 +28,7 @@ spec:
       containers:
         - name: <APP_NAME>
           # In development, setting `imagePullPolicy: Always` and using :latest tag is useful.
-          # imagePullPolicy: Always
+          imagePullPolicy: Always
           image: <IMAGE>
           envFrom:
             - secretRef:

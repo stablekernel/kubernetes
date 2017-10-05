@@ -57,6 +57,8 @@ The `aqueduct` directory contains templates for Kubernetes objects that deploy a
 
 *Note: Kubernetes object names may not contain underscores. If your application name contains underscores, substitute a dash (`-`) when replacing the `<APP_NAME>` template variable. For example, if your application name is `my_app`, use `my-app`.*
 
+0. Copy the *contents* of `aqueduct` into a directory named `k8s` in your project directory.
+
 1. Create a new namespace with the name of your application.
 
 ```
@@ -66,9 +68,67 @@ kubectl create namespace my-app
 2. Modify `config/configmap.yaml` and `config/secrets.yaml` by replacing all occurrences of `<APP_NAME>` with the name of your application (remembering to use dashes and not underscores), and replacing `<PASSWORD>` with a database password. Apply these files:
 
 ```
-kubectl apply -f config/
+kubectl apply -f k8s/config/
+```
+
+3. Add the `Dockerfile` in this repository to your Aqueduct project directory. Make sure that migration files are up to date by running `aqueduct db validate` (and running `aqueduct db generate` if they are not). Migration files must be a part of the docker image.
+
+Run `docker build` in the project directory. The name of the image must have the format `gcr.io/<PROJECT_ID>/<APP_NAME>` where `PROJECT_ID` is the name of the Google Cloud project that the target cluster is in and `APP_NAME` is your application's name.
+
+```
+docker build -t gcr.io/my-project/my-app:latest .
+```
+
+Once built, push it to your project's private registry:
+
+```
+gcloud docker -- push gcr.io/my-project/my-app:latest
+```
+
+4. In both `api-deployment-and-service.yaml` and `db-deployment-and-service.yaml`, replace template variables with their appropriate values. Ensure that `<IMAGE>` is replaced with the full name of the image built with `docker`. Apply these files.
+
+```
+# Note: this will (intentionally) only apply top-level files in k8s and will not recursively apply files in subdirectories.
+kubectl apply -f k8s/
+```
+
+5. Update the database schema to current version by replacing the template variables in `tasks/migration-upgrade-bare-pod.yaml` and then applying it:
+
+```
+kubectl apply -f k8s/tasks/migration-upgrade-bare-pod.yaml
+```
+
+Ensure this task completed by running `kubectl get pod -n my-app db-upgrade-job`. Once it has completed, delete it:
+
+```
+kubectl delete pod -n my-app db-upgrade-job
+```
+
+If using `ManagedAuth`, replace the template variables in `tasks/add-auth-client-bare-pod.yaml`. Apply this file, check it for completion, and delete it. Repeat for each client ID.
+
+6. Expose your application to the world by replacing the template variables in `ingress/nginx-https.yaml` and applying it.
+
+### Files to check in to version control
+
+Obfuscate any secret values - those in `config/secrets.yaml` and `tasks/add-auth-client-bare-pod.yaml` and check in all files in `k8s`.
+
+### Updating the Application
+
+For application updates that do not require database schema changes, build the Docker image and push it to the registry with `gcloud`. Delete all *pods* in the `api-deployment`.
+
+```
+kubectl delete pod api-deployment-xxxxxxx-xxxxx
+```
+
+The pods will automatically be recreated and will pull the most recent image.
+
+If a database update is required, make sure to run `aqueduct db generate` before building and pushing the Docker image. Then follow the instructions in step 5 before deleting pods.
+
+*Note: This scheme is useful for development. When deploying to production, a unique tag should be used for each image and that image name should be added to the `api-deployment-and-service.yaml`. Instead of deleting pods, re-apply this configuration file:
+
+```
+kubectl apply -f k8s/api-deployment-and-service.yaml
 ```
 
 
 
-### Files to check in to version control

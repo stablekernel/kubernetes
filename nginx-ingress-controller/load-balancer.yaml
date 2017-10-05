@@ -1,5 +1,3 @@
-# Assigns HTTP requests made to a static IP address to a nginx ingress controller
-# Note: A static IP address must be allocated and entered in spec.loadBalancerIP.
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,8 +9,6 @@ metadata:
     app: nginx-ingress-lb
 spec:
   type: LoadBalancer
-  # Once this service has been deployed, reserve the IP address assigned to this service.
-  # loadBalancerIP: <StaticIPAddress>
   ports:
   - port: 80
     name: http
