@@ -4,7 +4,6 @@ metadata:
   name: api-service
   namespace: <APP_NAME>
 spec:
-  type: LoadBalancer
   selector:
     app: <APP_NAME>
     tier: frontend
