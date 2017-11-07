@@ -71,6 +71,17 @@ kubectl create namespace my-app
 kubectl apply -f k8s/config/
 ```
 
+Change your Aqueduct application's config.yaml to use the values from the configmap, secrets and db-service:
+
+```
+database:
+  username: $POSTGRES_USER
+  password: $POSTGRES_PASSWORD
+  host: db-service
+  port: 5432
+  databaseName: $POSTGRES_DB
+```
+
 3. Add the `Dockerfile` in this repository to your Aqueduct project directory. Make sure that migration files are up to date by running `aqueduct db validate` (and running `aqueduct db generate` if they are not). Migration files must be a part of the docker image.
 
 Run `docker build` in the project directory. The name of the image must have the format `gcr.io/<PROJECT_ID>/<APP_NAME>` where `PROJECT_ID` is the name of the Google Cloud project that the target cluster is in and `APP_NAME` is your application's name.
