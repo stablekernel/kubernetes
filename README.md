@@ -62,7 +62,7 @@ The `aqueduct` directory contains templates for Kubernetes objects that deploy a
 1. Create a new namespace with the name of your application.
 
 ```
-kubectl create namespace my-app
+kubectl create namespace <app-name>
 ```
 
 2. Modify `config/configmap.yaml` and `config/secrets.yaml` by replacing all occurrences of `<APP_NAME>` with the name of your application (remembering to use dashes and not underscores), and replacing `<PASSWORD>` with a database password. Apply these files:
@@ -87,13 +87,13 @@ database:
 Run `docker build` in the project directory. The name of the image must have the format `gcr.io/<PROJECT_ID>/<APP_NAME>` where `PROJECT_ID` is the name of the Google Cloud project that the target cluster is in and `APP_NAME` is your application's name.
 
 ```
-docker build -t gcr.io/my-project/my-app:latest .
+docker build -t gcr.io/<project-id>/<app-name>:latest .
 ```
 
 Once built, push it to your project's private registry:
 
 ```
-gcloud docker -- push gcr.io/my-project/my-app:latest
+gcloud docker -- push gcr.io/<project-id>/<app-name>:latest
 ```
 
 4. In both `api-deployment-and-service.yaml` and `db-deployment-and-service.yaml`, replace template variables with their appropriate values. Ensure that `<IMAGE>` is replaced with the full name of the image built with `docker`. Apply these files.
@@ -109,10 +109,10 @@ kubectl apply -f k8s/
 kubectl apply -f k8s/tasks/migration-upgrade-bare-pod.yaml
 ```
 
-Ensure this task completed by running `kubectl get pod -n my-app db-upgrade-job`. Once it has completed, delete it:
+Ensure this task completed by running `kubectl get pod -n <app-name> db-upgrade-job`. Once it has completed, delete it:
 
 ```
-kubectl delete pod -n my-app db-upgrade-job
+kubectl delete pod -n <app-name> db-upgrade-job
 ```
 
 If using `ManagedAuth`, replace the template variables in `tasks/add-auth-client-bare-pod.yaml`. Apply this file, check it for completion, and delete it. Repeat for each client ID.
@@ -125,10 +125,16 @@ Obfuscate any secret values - those in `config/secrets.yaml` and `tasks/add-auth
 
 ### Updating the Application
 
-For application updates that do not require database schema changes, build the Docker image and push it to the registry with `gcloud`. Delete all *pods* in the `api-deployment`.
+For application updates that do not require database schema changes, build the Docker image and push it to the registry with `gcloud`. If you are tagging images correctly, just set the image of your deployment:
 
 ```
-kubectl delete pod api-deployment-xxxxxxx-xxxxx
+kubectl set image deployment/api-deployment <app-name>=gcr.io/<project-id>/<app-name>:<tag> -n <app-name>
+```
+
+If you are reusing the latest tag, delete all *pods* in the `api-deployment`.
+
+```
+kubectl delete pod api-deployment-xxxxxxx-xxxxx -n <app-name>
 ```
 
 The pods will automatically be recreated and will pull the most recent image.
