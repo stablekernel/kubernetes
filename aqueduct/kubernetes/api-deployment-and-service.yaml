@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+  namespace: <APP_NAME>
+spec:
+  selector:
+    app: <APP_NAME>
+    role: backend
+    type: api
+  ports:
+    - port: 80
+      targetPort: 8082
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: api-deployment
+  namespace: <APP_NAME>
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: <APP_NAME>
+        role: backend
+        type: api
+    spec:
+      containers:
+        - name: <APP_NAME>
+          # In development, setting `imagePullPolicy: Always` and using :latest tag is useful.
+          imagePullPolicy: Always
+          image: <IMAGE>
+          envFrom:
+            - secretRef:
+                name: secrets
+            - configMapRef:
+                name: config
+          ports:
+            - containerPort: 8082
+      securityContext:
+              runAsNonRoot: true

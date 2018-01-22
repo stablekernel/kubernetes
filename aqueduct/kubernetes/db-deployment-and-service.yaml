@@ -10,7 +10,8 @@ spec:
     metadata:
       labels:
         app: <APP_NAME>
-        tier: backend
+        role: backend
+        type: database
     spec:
       containers:
         - name: postgresql
@@ -38,7 +39,8 @@ metadata:
 spec:
   selector:
     app: <APP_NAME>
-    tier: backend
+    role: backend
+    type: database
   ports:
     - protocol: TCP
       port: 5432
