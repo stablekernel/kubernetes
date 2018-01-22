@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     app: <APP_NAME>
-    tier: backend
+    role: backend
     type: api
   ports:
     - port: 80
@@ -23,7 +23,7 @@ spec:
     metadata:
       labels:
         app: <APP_NAME>
-        tier: backend
+        role: backend
         type: api
     spec:
       containers:

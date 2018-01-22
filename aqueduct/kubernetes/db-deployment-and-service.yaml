@@ -10,7 +10,7 @@ spec:
     metadata:
       labels:
         app: <APP_NAME>
-        tier: backend
+        role: backend
         type: database
     spec:
       containers:
@@ -39,7 +39,7 @@ metadata:
 spec:
   selector:
     app: <APP_NAME>
-    tier: backend
+    role: backend
     type: database
   ports:
     - protocol: TCP
