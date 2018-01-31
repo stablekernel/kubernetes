@@ -30,10 +30,10 @@ kubectl apply -f kube-lego/
 
 *The nginx ingress controller is only necessary if you prefer not to use Google Cloud Load Balancer (GCLB costs $200+/yr).*
 
-Without the need to modify any files, apply the contents of `nginx-ingress-controller` to the cluster.
+Run the script `nginx_deploy.sh`:
 
 ```bash
-kubectl apply -f nginx-ingress-controller/
+sh nginx_deploy.sh
 ```
 
 It will take a moment for `nginx-ingress-lb` to acquire an IP address. During that time, running the command `kubectl get services -n kube-system` will show something like the following:
@@ -146,6 +146,3 @@ If a database update is required, make sure to run `aqueduct db generate` before
 ```
 kubectl apply -f k8s/api-deployment-and-service.yaml
 ```
-
-
-
