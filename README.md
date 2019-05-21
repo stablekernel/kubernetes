@@ -57,7 +57,7 @@ The `aqueduct` directory contains templates for Kubernetes objects that deploy a
 
 *Note: Kubernetes object names may not contain underscores. If your application name contains underscores, substitute a dash (`-`) when replacing the `<APP_NAME>` template variable. For example, if your application name is `my_app`, use `my-app`.*
 
-0. Copy the *contents* of `aqueduct` into a directory named `k8s` in your project directory.
+0. Copy the *contents* of `aqueduct/kubernetes` into a directory named `k8s` in your project directory.
 
 1. Create a new namespace with the name of your application.
 
